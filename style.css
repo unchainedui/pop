@@ -1,0 +1,157 @@
+$pop-font-family:        $uiFontFamily;
+$pop-font-size:          $uiFontSize;
+$pop-color:              $uiColor;
+$pop-active-color:       $uiActiveColor;
+$pop-background-color:   $uiBgColor;
+$pop-animation-style:    $uiPopTransition;
+$pop-animation-time:     300ms;/*$uiPopTransitionDuration;*/
+$pop-width:              calc($uiGrid * 10);
+$pop-item-height:        calc($uiGrid * 1.5);
+$pop-blur:               5px;
+
+$pop-size-s:                calc($uiGrid * 2);
+$pop-size-m:                calc($uiGrid * 2.5);
+$pop-size-l:                calc($uiGrid * 3);
+
+.pop,
+.pop-button,
+.pop-button svg {
+  transition: all $pop-animation-time $pop-animation-style 0s;
+}
+
+.pop-button {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(0);
+  cursor: pointer;
+  color: $pop-color;
+
+  svg {
+    position: relative;
+    width: 70%;
+    height: 100%;
+    path {
+      fill: none;
+      stroke: $pop-color;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10;
+    }
+  }
+
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    filter: blur($pop-blur);
+    background: $pop-background-color;
+    border-radius: 50%;
+  }
+}
+
+.pop-items {
+  padding: calc($pop-item-height / 4) 0;
+  position: absolute;
+  width: $pop-width;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color: $pop-color;
+  background: $pop-background-color;
+  opacity: 0;
+  visibility: hidden;
+  border-radius: 50%;
+  filter: blur($pop-blur);
+  transition:
+    all $pop-animation-time $pop-animation-style 0s,
+    opacity calc($pop-animation-time * 0.75) $pop-animation-style calc($pop-animation-time/4),
+    transform $pop-animation-time $pop-animation-style 0s,
+    visibility 0s linear $pop-animation-time;
+}
+
+.pop {
+  position: relative;
+  cursor: pointer;
+  height: $pop-size-s;
+  width: $pop-size-s;
+  font: $pop-font-size $pop-font-family;
+  line-height: $pop-item-height;
+
+  &.active {
+    cursor: normal;
+
+    .pop-button {
+      opacity: 0;
+    }
+
+    .pop-items {
+      opacity: 1;
+      visibility: visible;
+      border-radius: 0;
+      filter: blur(0);
+      transition:
+        all $pop-animation-time $pop-animation-style 0s,
+        opacity calc($pop-animation-time * 0.75) $pop-animation-style 0s,
+        transform $pop-animation-time $pop-animation-style 0s,
+        visibility 0s linear 0s;
+    }
+  }
+}
+
+.pop-c  { transform-origin: 50% 50%; left: 50%; top: 50%;}
+.pop-n  { transform-origin: 50% 10%; left: 50%; top: 0;}
+.pop-ne { transform-origin: 90% 10%; right: 0; top: 0;}
+.pop-e  { transform-origin: 90% 50%; right: 0; top: 50%;}
+.pop-se { transform-origin: 90% 90%; right: 0; bottom: 0;}
+.pop-s  { transform-origin: 50% 90%; left: 50%; bottom: 0;}
+.pop-sw { transform-origin: 10% 90%; left: 0; bottom: 0;}
+.pop-w  { transform-origin: 10% 50%; left: 0; top: 50%;}
+.pop-nw { transform-origin: 10% 10%; left: 0; top: 0;}
+
+/*
+.pop-c  { transform: translate(-50%, -50%) scale(0.2); transform-origin: 50% 50%; }
+.pop-n  { transform: translate(-50%, -10%) scale(0.2); transform-origin: 50% 10%; }
+.pop-ne { transform: translate(-90%, -10%) scale(0.2); transform-origin: 90% 10%; }
+.pop-e  { transform: translate(-90%, -50%) scale(0.2); transform-origin: 90% 50%; }
+.pop-se { transform: translate(-90%, -90%) scale(0.2); transform-origin: 90% 90%; }
+.pop-s  { transform: translate(-50%, -90%) scale(0.2); transform-origin: 50% 90%; }
+.pop-sw { transform: translate(-10%, -90%) scale(0.2); transform-origin: 10% 90%; }
+.pop-w  { transform: translate(-10%, -50%) scale(0.2); transform-origin: 10% 50%; }
+.pop-nw { transform: translate(-10%, -10%) scale(0.2); transform-origin: 10% 10%; }
+*/
+.pop.active {
+  .pop-c  { transform: translate(-50%, -50%) scale(1) !important; }
+  .pop-n  { transform: translate(-50%, 0) scale(1) !important; }
+  .pop-ne { transform: scale(1) !important; }
+  .pop-e  { transform: translate(0, -50%) scale(1) !important; }
+  .pop-se { transform: scale(1) !important; }
+  .pop-s  { transform: translate(-50%, 0) scale(1) !important; }
+  .pop-sw { transform: scale(1) !important; }
+  .pop-w  { transform: translate(0, -50%) scale(1) !important; }
+  .pop-nw { transform: scale(1) !important; }
+}
+
+.pop-item {
+  color: $pop-color;
+  &.active {
+    color: $pop-active-color;
+  }
+
+  .input {
+
+  }
+}
+
+.pop-link {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,0 +1,273 @@
+.input {
+  position: relative;
+  display: block;
+  height: 40px;
+  width: 100%;
+  max-width: 300px;
+  font: 16px sans-serif;
+  text-align: center;
+  cursor: text;
+  margin-bottom: 1px;
+    &:hover {
+      input {
+        color: #ddd;
+        background: rgb(9, 9, 9);
+      }
+      span {
+        color: #ddd;
+      }
+    }
+}
+.input input, .input span, .input em {
+    transition: all 300ms cubic-bezier(0.66, 0, 0.07, 1);
+  }
+.input input {
+    font: 16px sans-serif;
+    background: #000;
+    color: #fff;
+    height: 40px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: center;
+    padding: 5px 10px 0;
+    box-sizing: border-box;
+  }
+.input span {
+    top: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+
+    color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+  }
+.input span i {
+      font-style: normal;
+      opacity: 0.5;
+    }
+.input a {
+    position: absolute;
+  }
+.input em {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #D52917;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+    line-height: 40px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    font-style: normal;
+
+    /* fade out */
+    visibility:hidden;
+    opacity:0;
+    transition:
+      visibility 0s cubic-bezier(0.66, 0, 0.07, 1) 300ms,
+      all 300ms cubic-bezier(0.66, 0, 0.07, 1) 0;
+  }
+.input.input-message em {
+    /* fade in */
+    visibility:visible;
+    opacity:1;
+    transition:
+      visibility 0s cubic-bezier(0.66, 0, 0.07, 1) 300ms,
+      all 300ms cubic-bezier(0.66, 0, 0.07, 1) 0;
+  }
+.input input:focus {
+    background: #111;
+    color: #ddd;
+  }
+.input.input-value span, .input input:focus + span {
+    -webkit-transform: scale(0.6) translateY(-20%) !important;
+            transform: scale(0.6) translateY(-20%) !important;
+  }
+.input.input-value span {
+    color: rgb(166, 166, 166);
+  }
+.input input:focus + span {
+    color: #fff;
+  }
+.input.error input {
+    background: #D52917 !important;
+    color: #000 !important;
+  }
+.input input:disabled {
+    color: rgb(128, 128, 128);
+  }
+/*$uiPopTransitionDuration;*/
+.pop,
+.pop-button,
+.pop-button svg {
+  transition: all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s;
+}
+.pop-button {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  cursor: pointer;
+  color: #fff;
+}
+.pop-button svg {
+    position: relative;
+    width: 70%;
+    height: 100%;
+  }
+.pop-button svg path {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10;
+    }
+.pop-button:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    -webkit-filter: blur(5px);
+            filter: blur(5px);
+    background: #000;
+    border-radius: 50%;
+  }
+.pop-items {
+  padding: 7.5px 0;
+  position: absolute;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color: #fff;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  border-radius: 50%;
+  -webkit-filter: blur(5px);
+          filter: blur(5px);
+  transition:
+    all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+    opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 75ms,
+    visibility 0s linear 300ms,
+    -webkit-transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s;
+  transition:
+    all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+    opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 75ms,
+    transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+    visibility 0s linear 300ms;
+  transition:
+    all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+    opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 75ms,
+    transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+    visibility 0s linear 300ms,
+    -webkit-transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s;
+}
+.pop {
+  position: relative;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  font: 16px sans-serif;
+  line-height: 30px;
+}
+.pop.active {
+    cursor: normal;
+  }
+.pop.active .pop-button {
+      opacity: 0;
+    }
+.pop.active .pop-items {
+      opacity: 1;
+      visibility: visible;
+      border-radius: 0;
+      -webkit-filter: blur(0);
+              filter: blur(0);
+      transition:
+        all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        visibility 0s linear 0s,
+        -webkit-transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s;
+      transition:
+        all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        visibility 0s linear 0s;
+      transition:
+        all 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        opacity 225ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s,
+        visibility 0s linear 0s,
+        -webkit-transform 300ms cubic-bezier(0.66, 0, 0.5, 1.5) 0s;
+    }
+.pop-c  { -webkit-transform-origin: 50% 50%; transform-origin: 50% 50%; left: 50%; top: 50%;}
+.pop-n  { -webkit-transform-origin: 50% 10%; transform-origin: 50% 10%; left: 50%; top: 0;}
+.pop-ne { -webkit-transform-origin: 90% 10%; transform-origin: 90% 10%; right: 0; top: 0;}
+.pop-e  { -webkit-transform-origin: 90% 50%; transform-origin: 90% 50%; right: 0; top: 50%;}
+.pop-se { -webkit-transform-origin: 90% 90%; transform-origin: 90% 90%; right: 0; bottom: 0;}
+.pop-s  { -webkit-transform-origin: 50% 90%; transform-origin: 50% 90%; left: 50%; bottom: 0;}
+.pop-sw { -webkit-transform-origin: 10% 90%; transform-origin: 10% 90%; left: 0; bottom: 0;}
+.pop-w  { -webkit-transform-origin: 10% 50%; transform-origin: 10% 50%; left: 0; top: 50%;}
+.pop-nw { -webkit-transform-origin: 10% 10%; transform-origin: 10% 10%; left: 0; top: 0;}
+/*
+.pop-c  { transform: translate(-50%, -50%) scale(0.2); transform-origin: 50% 50%; }
+.pop-n  { transform: translate(-50%, -10%) scale(0.2); transform-origin: 50% 10%; }
+.pop-ne { transform: translate(-90%, -10%) scale(0.2); transform-origin: 90% 10%; }
+.pop-e  { transform: translate(-90%, -50%) scale(0.2); transform-origin: 90% 50%; }
+.pop-se { transform: translate(-90%, -90%) scale(0.2); transform-origin: 90% 90%; }
+.pop-s  { transform: translate(-50%, -90%) scale(0.2); transform-origin: 50% 90%; }
+.pop-sw { transform: translate(-10%, -90%) scale(0.2); transform-origin: 10% 90%; }
+.pop-w  { transform: translate(-10%, -50%) scale(0.2); transform-origin: 10% 50%; }
+.pop-nw { transform: translate(-10%, -10%) scale(0.2); transform-origin: 10% 10%; }
+*/
+.pop.active .pop-c  { -webkit-transform: translate(-50%, -50%) scale(1) !important; transform: translate(-50%, -50%) scale(1) !important; }
+.pop.active .pop-n  { -webkit-transform: translate(-50%, 0) scale(1) !important; transform: translate(-50%, 0) scale(1) !important; }
+.pop.active .pop-ne { -webkit-transform: scale(1) !important; transform: scale(1) !important; }
+.pop.active .pop-e  { -webkit-transform: translate(0, -50%) scale(1) !important; transform: translate(0, -50%) scale(1) !important; }
+.pop.active .pop-se { -webkit-transform: scale(1) !important; transform: scale(1) !important; }
+.pop.active .pop-s  { -webkit-transform: translate(-50%, 0) scale(1) !important; transform: translate(-50%, 0) scale(1) !important; }
+.pop.active .pop-sw { -webkit-transform: scale(1) !important; transform: scale(1) !important; }
+.pop.active .pop-w  { -webkit-transform: translate(0, -50%) scale(1) !important; transform: translate(0, -50%) scale(1) !important; }
+.pop.active .pop-nw { -webkit-transform: scale(1) !important; transform: scale(1) !important; }
+.pop-item {
+  color: #fff;
+}
+.pop-item.active {
+    color: #00f;
+  }
+.pop-item .input {
+
+  }
+.pop-link {
+  color: inherit;
+  text-decoration: none;
+}
+html,
+body,
+.display {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
