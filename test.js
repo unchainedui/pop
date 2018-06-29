@@ -7,11 +7,23 @@ ready(() => {
 
   const pop = new Pop({
     willOpen: () => true,
-    autoHide: true,
+    autoHide: false,
     menu: false,
     pop: 'c',
     items: {
-      'title': {
+      tools: {
+        type: 'button',
+        delete: {
+          title: 'Delete',
+          icon: 'delete',
+          confirm: true
+        },
+        tool: {
+          title: 'Tool',
+          icon: 'tool'
+        }
+      },
+      title: {
         type: Input,
         title: 'Title',
         value: 'New post'
@@ -23,6 +35,8 @@ ready(() => {
       'node/soundcloud': { title: 'Soundcloud' }
     }
   }, {
+    delete: val => console.log('delete', val),
+    tool: val => console.log('tool', val),
     node: val => console.log('node', val),
     title: val => console.log('title', val)
   }).appendTo(elDisplay);

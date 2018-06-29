@@ -47,6 +47,7 @@
     "uc-compose": "^1.0.0",
     "uc-detective": "^1.0.1",
     "uc-dom": "^1.2.0",
-    "uc-icon": "^1.0.0"
+    "uc-icon": "^1.0.0",
+    "uc-strings": "^1.0.0"
   }
 }

@@ -3,10 +3,12 @@ import compose from 'uc-compose';
 import html from 'uc-dom/methods';
 import icon from 'uc-icon';
 import { transform, requestAnimationFrame } from 'uc-detective';
+import { toCamelCase } from 'uc-strings';
 
 import link from './link';
+import button from './button';
 
-const ITEMS = { link };
+const ITEMS = { link, button };
 const DEFAULTYPE = 'link';
 
 const TRANSFORMS = {
@@ -44,7 +46,7 @@ const Pop = function(opts, cbs = {}) {
   this.events = {};
   this.events.click = on(this.el, 'click', e => {
     e.stopPropagation();
-    if (this.active) {
+    if (this.opened) {
       if (this.autoHide) {
         this.hide();
       }
@@ -78,7 +80,8 @@ const Pop = function(opts, cbs = {}) {
       action = args[2];
       args = args.slice(3);
     }
-    item[action || 'click'].apply(item, args);
+
+    item[toCamelCase(`on-${action || 'click'}`)].apply(item, args);
   });
 }
 
@@ -96,11 +99,12 @@ Pop.prototype = compose(
       const elItems = create('div.pop-items.pop-c');
 
       for (const name in items) {
-        const elItem = create('div.pop-item');
         const item = items[name];
-        const itemInstance = this.items[name] = this.getItem(name, item);
-        elItem.appendChild(itemInstance.el);
+        const { instance, type } = this.getItem(name, item);
+        const elItem = create(`div.pop-item${ type ? `.pop-item-${type}` : ''}`);
+        elItem.appendChild(instance.el);
         elItems.appendChild(elItem);
+        this.items[name] = instance;
       }
 
       return elItems;
@@ -108,11 +112,20 @@ Pop.prototype = compose(
 
     getItem: function(name, item) {
       if (typeof item.type === 'function') {
-        return new item.type(Object.assign({ onChange: val => this.cbs[name](val) }, item))
+        const opts = Object.assign({ onChange: val => this.cbs[name](val) }, item);
+        delete opts.type;
+        const instance = new item.type(opts);
+        return {
+          instance,
+          type: instance.el.classList.item(0)
+        }
       }
 
       const type = item.type || DEFAULTYPE;
-      return ITEMS[type].call(this, name, item);
+      return {
+        type,
+        instance: ITEMS[type].call(this, name, item)
+      }
     },
 
     value: function(val) {
@@ -158,7 +171,7 @@ Pop.prototype = compose(
     },
 
     toggle: function() {
-      if (this.active) {
+      if (this.opened) {
         this.hide();
       } else {
         this.show();
@@ -169,14 +182,14 @@ Pop.prototype = compose(
       activePop && activePop.hide();
       activePop = this;
       this.addClass('active');
-      this.active = true;
+      this.opened = true;
       return this;
     },
 
     hide: function() {
       activePop = undefined;
       this.removeClass('active');
-      this.active = false;
+      this.opened = false;
       return this;
     },
 

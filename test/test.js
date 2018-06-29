@@ -720,6 +720,10 @@
     return str.match(rxAstralRange).slice(begin, end).join('')
   }
 
+  function toCamelCase(str) {
+    return str.replace(/[-_](\w)/g, (matches, letter) => letter.toUpperCase());
+  }
+
   function slugify(str) {
     return str
       .toLowerCase()
@@ -1084,7 +1088,7 @@
 
     return {
       el,
-      click: (...args) => {
+      onClick: (...args) => {
         const a = action.split('/')[0];
         !this.menu && this.value(action);
         this.cbs[a].apply(this, args);
@@ -1096,7 +1100,111 @@
     };
   }
 
-  const ITEMS = { link };
+  const CONFIRMDELAY = 500;
+
+  const Buttons = function(action, opts, cb) {
+    this.cb = cb;
+    this.el = create('div.pop-buttons');
+    this.buttons = this.createButtons(action, opts);
+    this.confirm = null;
+
+    for (const name in this.buttons) {
+      this[toCamelCase(`on-${name}`)] = this.createHandler(name);
+      this.el.appendChild(this.buttons[name].el);
+    }
+  };
+
+  Buttons.prototype = {
+    createButtons: function(action, opts) {
+      const buttons = {};
+
+      for (const name in opts) {
+        if (name === 'type') {
+          continue;
+        }
+
+        const button = opts[name];
+        const el = create('a', icon(button.icon));
+        el.href = `#/${action}/${name}${button.value ? `/${button.value}` : ''}`;
+        if (button.title) {
+          el.title = button.title;
+        }
+
+        buttons[name] = {
+          el,
+          confirm: !!button.confirm
+        };
+
+      }
+
+      return buttons;
+    },
+
+    createHandler: function(name) {
+      return (...args) => this.clickHandler(name, ...args);
+    },
+
+    clickHandler: function(name, ...args) {
+      const button = this.buttons[name];
+
+      if (!button.confirm) {
+        this.cb(name, ...args);
+        return;
+      }
+
+      if (name === this.confirm) {
+        if (this.confirmTimeout) {
+          return;
+        }
+        this.hideConfirm();
+        this.cb(name, ...args);
+        return;
+      }
+
+      this.willConfirm(name);
+    },
+
+    willConfirm: function(name) {
+      this.confirm && this.hideConfirm();
+      this.confirm = name;
+      const el = this.buttons[name].el;
+      el.classList.add('pop-confirm');
+      this.confirmMouseOut = on(el, 'mouseout', () => this.hideConfirm());
+      this.confirmTimeout = setTimeout(() => {
+        this.confirmTimeout = null;
+      }, CONFIRMDELAY);
+    },
+
+    hideConfirm: function() {
+      if (!this.confirm) {
+        return;
+      }
+      clearTimeout(this.confirmTimeout);
+      this.confirmTimeout = null;
+      const el = this.buttons[this.confirm].el;
+      el.classList.remove('pop-confirm');
+      off(el, 'mouseout', this.confirmMouseOut);
+      this.confirmMouseOut = null;
+      this.confirm = null;
+    },
+
+    title: function(name, title) {
+      this.buttons[name].el.title = title;
+    },
+
+    remove: function() {
+      this.confirm && this.hideConfirm();
+      remove(this.el);
+    }
+  };
+
+  function button(action, opts) {
+    return new Buttons(action, opts, (name, ...args) =>
+      this.cbs[name].apply(this, args)
+    )
+  }
+
+  const ITEMS = { link, button };
   const DEFAULTYPE = 'link';
 
   const TRANSFORMS = {
@@ -1134,7 +1242,7 @@
     this.events = {};
     this.events.click = on(this.el, 'click', e => {
       e.stopPropagation();
-      if (this.active) {
+      if (this.opened) {
         if (this.autoHide) {
           this.hide();
         }
@@ -1168,7 +1276,8 @@
         action = args[2];
         args = args.slice(3);
       }
-      item[action || 'click'].apply(item, args);
+
+      item[toCamelCase(`on-${action || 'click'}`)].apply(item, args);
     });
   };
 
@@ -1186,11 +1295,12 @@
         const elItems = create('div.pop-items.pop-c');
 
         for (const name in items) {
-          const elItem = create('div.pop-item');
           const item = items[name];
-          const itemInstance = this.items[name] = this.getItem(name, item);
-          elItem.appendChild(itemInstance.el);
+          const { instance, type } = this.getItem(name, item);
+          const elItem = create(`div.pop-item${ type ? `.pop-item-${type}` : ''}`);
+          elItem.appendChild(instance.el);
           elItems.appendChild(elItem);
+          this.items[name] = instance;
         }
 
         return elItems;
@@ -1198,11 +1308,20 @@
 
       getItem: function(name, item) {
         if (typeof item.type === 'function') {
-          return new item.type(Object.assign({ onChange: val => this.cbs[name](val) }, item))
+          const opts = Object.assign({ onChange: val => this.cbs[name](val) }, item);
+          delete opts.type;
+          const instance = new item.type(opts);
+          return {
+            instance,
+            type: instance.el.classList.item(0)
+          }
         }
 
         const type = item.type || DEFAULTYPE;
-        return ITEMS[type].call(this, name, item);
+        return {
+          type,
+          instance: ITEMS[type].call(this, name, item)
+        }
       },
 
       value: function(val) {
@@ -1248,7 +1367,7 @@
       },
 
       toggle: function() {
-        if (this.active) {
+        if (this.opened) {
           this.hide();
         } else {
           this.show();
@@ -1259,14 +1378,14 @@
         activePop && activePop.hide();
         activePop = this;
         this.addClass('active');
-        this.active = true;
+        this.opened = true;
         return this;
       },
 
       hide: function() {
         activePop = undefined;
         this.removeClass('active');
-        this.active = false;
+        this.opened = false;
         return this;
       },
 
@@ -1298,11 +1417,23 @@
 
     const pop = new Pop({
       willOpen: () => true,
-      autoHide: true,
+      autoHide: false,
       menu: false,
       pop: 'c',
       items: {
-        'title': {
+        tools: {
+          type: 'button',
+          delete: {
+            title: 'Delete',
+            icon: 'delete',
+            confirm: true
+          },
+          tool: {
+            title: 'Tool',
+            icon: 'tool'
+          }
+        },
+        title: {
           type: Input,
           title: 'Title',
           value: 'New post'
@@ -1314,6 +1445,8 @@
         'node/soundcloud': { title: 'Soundcloud' }
       }
     }, {
+      delete: val => console.log('delete', val),
+      tool: val => console.log('tool', val),
       node: val => console.log('node', val),
       title: val => console.log('title', val)
     }).appendTo(elDisplay);

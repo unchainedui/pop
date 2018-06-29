@@ -7,11 +7,12 @@ $pop-animation-style:    $uiPopTransition;
 $pop-animation-time:     300ms;/*$uiPopTransitionDuration;*/
 $pop-width:              calc($uiGrid * 10);
 $pop-item-height:        calc($uiGrid * 1.5);
+$pop-tools-height:       calc($uiGrid * 2);
 $pop-blur:               5px;
 
-$pop-size-s:                calc($uiGrid * 2);
-$pop-size-m:                calc($uiGrid * 2.5);
-$pop-size-l:                calc($uiGrid * 3);
+$pop-size-s:             calc($uiGrid * 2);
+$pop-size-m:             calc($uiGrid * 2.5);
+$pop-size-l:             calc($uiGrid * 3);
 
 .pop,
 .pop-button,
@@ -117,17 +118,6 @@ $pop-size-l:                calc($uiGrid * 3);
 .pop-w  { transform-origin: 10% 50%; left: 0; top: 50%;}
 .pop-nw { transform-origin: 10% 10%; left: 0; top: 0;}
 
-/*
-.pop-c  { transform: translate(-50%, -50%) scale(0.2); transform-origin: 50% 50%; }
-.pop-n  { transform: translate(-50%, -10%) scale(0.2); transform-origin: 50% 10%; }
-.pop-ne { transform: translate(-90%, -10%) scale(0.2); transform-origin: 90% 10%; }
-.pop-e  { transform: translate(-90%, -50%) scale(0.2); transform-origin: 90% 50%; }
-.pop-se { transform: translate(-90%, -90%) scale(0.2); transform-origin: 90% 90%; }
-.pop-s  { transform: translate(-50%, -90%) scale(0.2); transform-origin: 50% 90%; }
-.pop-sw { transform: translate(-10%, -90%) scale(0.2); transform-origin: 10% 90%; }
-.pop-w  { transform: translate(-10%, -50%) scale(0.2); transform-origin: 10% 50%; }
-.pop-nw { transform: translate(-10%, -10%) scale(0.2); transform-origin: 10% 10%; }
-*/
 .pop.active {
   .pop-c  { transform: translate(-50%, -50%) scale(1) !important; }
   .pop-n  { transform: translate(-50%, 0) scale(1) !important; }
@@ -146,12 +136,43 @@ $pop-size-l:                calc($uiGrid * 3);
     color: $pop-active-color;
   }
 
-  .input {
-
+  .input input {
+    background: color($pop-background-color blend($pop-color 15%));
   }
 }
 
 .pop-link {
   color: inherit;
   text-decoration: none;
+}
+
+.pop-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  height: $pop-tools-height;
+  position: relative;
+
+  a {
+    flex-grow: 1;
+    height: $pop-tools-height;
+    position: relative;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    transition: all $pop-animation-time $pop-animation-style 0s,
+  }
+}
+
+.pop-confirm {
+  svg {
+    transform: scale(1.2);
+  }
+}
+
+.pop-item-input + .pop-item-link {
+  margin-top: calc($pop-item-height / 6);
 }

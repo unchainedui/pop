@@ -8,7 +8,7 @@ export default function link(action, opts) {
 
   return {
     el,
-    click: (...args) => {
+    onClick: (...args) => {
       const a = action.split('/')[0];
       !this.menu && this.value(action);
       this.cbs[a].apply(this, args);
