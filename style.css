@@ -63,8 +63,8 @@ $pop-size-l:             calc($uiGrid * 3);
   width: $pop-width;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  align-content: center;
+  align-items: stretch;
+  /*align-content: center;*/
   justify-content: center;
   color: $pop-color;
   background: $pop-background-color;
@@ -132,6 +132,9 @@ $pop-size-l:             calc($uiGrid * 3);
 
 .pop-item {
   color: $pop-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &.active {
     color: $pop-active-color;
   }
@@ -142,8 +145,11 @@ $pop-size-l:             calc($uiGrid * 3);
 }
 
 .pop-link {
+  display: block;
   color: inherit;
   text-decoration: none;
+  width: 100%;
+  text-align: center;
 }
 
 .pop-buttons {
